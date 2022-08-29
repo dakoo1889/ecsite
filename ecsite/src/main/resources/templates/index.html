@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">  <!--htmlにtymeleafを使用することをブラウザに伝える属性-->
+<head>
+  <meta charset="UTF-8">
+  <title>ECサイト</title>
+  <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}"/>
+  <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <link rel="stylesheet" 
+  		href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="/js/common.js"th:src="@{/js/common.js}"></script>
+  <script>
+  //追加されたカート情報を一蘭形式でメモリ上に保持しておくための変数を定義
+  let cartList = [];
+  
+  	$(() =>{
+		$('#loginForm').on('submit',login);
+	//cartBtnをもつ要素でclickイベントが発生した際に、addCartをよびだす。
+		$('.cartBtn').on('click',addCart);
+		
+		$('#buyBtn').on('click',buy);
+		$("#historyBtn").on('click',showHistory);
+		
+		$("#history").dialog({
+			autoOpen: false,
+			width: 550,
+			modal: true,
+			buttons:[
+			{
+				text:'OK',
+				click: function(){
+					$(this).dialog("close");
+				}
+			},
+			]
+		});
+	});
+	
+  </script>
+</head>
+<body>
+  <header>
+    <h1>My EC Site</h1>
+    <div>
+      <form name="loginForm" id="loginForm" method="post" action="#">
+        User name:<input type="text" name="userName"/>
+        Password:<input type="password" name="password" />
+        <button type="submit">Login</button>
+      </form>
+      <br />
+      <span id="welcome"> -- ようこそ！ ゲストさん</span>
+      <input type="hidden" id="hiddenUserId" value="0"/>
+    </div>
+  </header>
+
+  <table>
+    <thead>
+    <th>ID</th><th>商品名</th><th>価格</th><th>注文数</th><th>カート</th>
+    </thead>
+    <tbody>
+      <!--thymeleafを使用したループ処理-->
+      <!--ControllerでModelオブジェクトに追加されたキーで取得した値(Listコレクション)をループ-->
+      <tr th:each="item:${goods}"> <!--行-->
+        <td th:text="${item.id}" />　　　<!--列(セル)-->
+        <td th:text="${item.goodsName}" />　<!--列(セル)-->
+        <td th:text="${item.price}" />　　　　<!--列(セル)-->
+        <td><input type="number" class="count" value="0" /></td>　
+        <td><button class="cartBtn">カートに入れる</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <fieldset>
+    <legend>カート</legend>
+    <table id="cart">
+      <thead>
+        <tr>
+        <!--見出しセル-->
+          <th>ID</th><th>商品名</th><th>価格</th><th>注文数</th><th>カート</th>　
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+    <button id="buyBtn">購入</button>
+    <button id="historyBtn">履歴</button>
+  </fieldset>
+
+  <div id="history" title="購入履歴" style="display: none;">
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>商品名</th><th>注文数</th><th>購入日時</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
